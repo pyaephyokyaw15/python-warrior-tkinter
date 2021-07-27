@@ -19,7 +19,21 @@ Clone a repo
 
 3 Stages
 
-    1.working direcotry
+    1.working direcotry  ( git status)
 
-    2. Staging Aera 
+    2. Staging Aera  ( git add -A)
+
+    3. Commit ( git commit -m'message')
+
+=====================================================================
+
+Log files
+
+    git log
+
+=====================================================================
+
+Upload to github
+
+    git push
 
