@@ -2,6 +2,15 @@
 import tkinter
 from PIL import ImageTk, Image
 from custom_button import TkinterCustomButton
+import sqlite3
+import os
+from tkinter import messagebox
+
+
+# Database Connection
+with sqlite3.connect('grocery_store.db') as db:
+    cur = db.cursor()
+
 
 # Creat window
 root = tkinter.Tk()
@@ -22,12 +31,38 @@ passwd = tkinter.StringVar()
 
 # ==============  Functions ======================
 def admin():
+    global option
     login_window.deiconify()
-
+    option = 'admin'
 
 
 def employee():
+    global option
     login_window.deiconify()
+    option = 'Employee'
+
+def login():
+    username = user.get()
+    password = passwd.get()
+    entry1.delete(0, tkinter.END)
+    entry2.delete(0, tkinter.END)
+
+    find_user = 'SELECT * FROM {} WHERE id = ? and password = ?'.format(option)
+    
+    print(username, password)
+    cur.execute(find_user, [username, password])
+    results = cur.fetchone()
+    print(results)
+
+    if results:
+        print('login')
+        root.withdraw()
+        login_window.withdraw()
+        os.system('python {}.py'.format(option))
+
+    else:
+        messagebox.showerror('Error', 'Incorrect username or password.')
+
 
 
 
@@ -96,7 +131,7 @@ entry2.configure(show="*")
 entry2.configure(textvariable=passwd)
 
 # login_buttons
-button1 = TkinterCustomButton(master=login_window, corner_radius=20,text="LOGIN")
+button1 = TkinterCustomButton(master=login_window, corner_radius=20,text="LOGIN", command=login)
 button1.place(relx=0.5, rely=0.8,  anchor=tkinter.CENTER)
 
 
