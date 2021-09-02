@@ -5,6 +5,7 @@ from custom_button import TkinterCustomButton
 import sqlite3
 import os
 from tkinter import messagebox
+from tkinter import ttk
 
 
 # Database Connection
@@ -45,6 +46,7 @@ def add_item():
     new_item.set('')
     new_price.set('')
     new_quantity.set('')
+    show_items()
     
    
       
@@ -56,6 +58,7 @@ def remove_item():
     new_item.set('')
     new_price.set('')
     new_quantity.set('')
+    show_items()
 
 
 def edit_item():
@@ -66,6 +69,22 @@ def edit_item():
     new_item.set('')
     new_price.set('')
     new_quantity.set('')
+    show_items()
+
+
+def show_items():
+    clear_items()
+    sql_command = "SELECT * FROM Inventory ORDER BY quantity ASC"
+    cur.execute(sql_command)
+    data = cur.fetchall()
+    print(data)
+    for num, record in enumerate(data):
+        print(record)
+        my_tree.insert(parent='', index='end', iid=num, values=(record[0], record[1], record[2], record[3]))
+
+
+def clear_items():
+    my_tree.delete(*my_tree.get_children())
 
 
 
@@ -131,6 +150,34 @@ exit_btn = TkinterCustomButton(master=product, corner_radius=20,text="Exit", com
 exit_btn.place(relx=0.81, rely=0.9)
 
 
+# ======================= Table ======================================
+item_aera= tkinter.Frame(root)
+item_aera.place(relx=0.52,rely=0.12,relwidth=0.5,relheight=0.78, )
 
+my_tree = ttk.Treeview(item_aera, height=10)
+my_tree.place(relx=0,rely=0, relwidth=0.9, relheight=1)
+style = ttk.Style()
+style.configure("Treeview", font="-family {Poppins} -size 12", rowheight=30)
+style.configure("Treeview.Heading", font="-family {Poppins} -size 15")
+
+
+my_tree['columns'] = ('Item-ID', 'Item', 'Quantity', 'Price')
+
+my_tree.column('#0', width=0, minwidth=0, stretch=tkinter.NO)
+my_tree.column('Item-ID', width=100)
+my_tree.column('Item', width=200)
+my_tree.column('Quantity', width=50)
+my_tree.column('Price', width=50)
+
+
+
+# heading
+my_tree.heading('#0', text='')
+my_tree.heading('Item-ID', text = 'Item ID')
+my_tree.heading('Item', text = 'Item')
+my_tree.heading('Quantity', text = 'In Stock')
+my_tree.heading('Price', text = 'Price')
+
+show_items()
 # loop forever
 root.mainloop()
